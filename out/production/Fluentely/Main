@@ -7,7 +7,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> criarJanelaPrincipal());
     }
 
-    // CRIANDO A JANELA PRINCIPAL (POST IT AMARELO)
+    // ========================================================== COMEÇA JANELA PRINCIPAL ==============================================================================
     private static void criarJanelaPrincipal() {
         JFrame frame = new JFrame("Tela Inicial");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -18,13 +18,13 @@ public class Main {
         // Painel de fundo para customizar a cor
         JPanel backgroundPanel = new JPanel();
         backgroundPanel.setLayout(null);
-        backgroundPanel.setBackground(new Color(200, 230, 255));
+        backgroundPanel.setBackground(new Color(200, 230, 255)); // Cor de fundo azul claro
         backgroundPanel.setBounds(0, 0, 800, 600);
         frame.add(backgroundPanel);
 
         // Título principal
         JLabel titulo = new JLabel("Bem-vindo ao Fluentily", JLabel.CENTER);
-        titulo.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 32));
+        titulo.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 32)); // Fonte mais elegante
         titulo.setBounds(200, 50, 400, 50);
         backgroundPanel.add(titulo);
 
@@ -37,20 +37,32 @@ public class Main {
         // Botão Aluno
         JButton buttonAluno = new JButton("Aluno");
         buttonAluno.setBounds(250, 250, 100, 40);
-        buttonAluno.setBackground(new Color(239, 229, 130));
-        buttonAluno.setForeground(Color.BLACK);
+        buttonAluno.setBackground(new Color(100, 200, 100)); // Cor de fundo verde claro
+        buttonAluno.setForeground(Color.BLACK); // Cor do texto preto
         buttonAluno.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "Você escolheu Aluno!", "Opção", JOptionPane.INFORMATION_MESSAGE);
+            int confirm = JOptionPane.showConfirmDialog(frame, "Tem certeza que deseja continuar como Aluno?", "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                String nome = JOptionPane.showInputDialog(frame, "Digite o seu nome:", "Nome do Aluno", JOptionPane.PLAIN_MESSAGE);
+                if (nome != null && !nome.trim().isEmpty()) {
+                    criarJanelaAluno(frame, nome);
+                }
+            }
         });
         backgroundPanel.add(buttonAluno);
 
         // Botão Professor
         JButton buttonProfessor = new JButton("Professor");
         buttonProfessor.setBounds(450, 250, 100, 40);
-        buttonProfessor.setBackground(new Color(239, 229, 130));
-        buttonProfessor.setForeground(Color.BLACK);
+        buttonProfessor.setBackground(new Color(100, 150, 250)); // Cor de fundo azul
+        buttonProfessor.setForeground(Color.WHITE); // Cor do texto branco
         buttonProfessor.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "Você escolheu Professor!", "Opção", JOptionPane.INFORMATION_MESSAGE);
+            int confirm = JOptionPane.showConfirmDialog(frame, "Tem certeza que deseja continuar como Professor?", "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                String nome = JOptionPane.showInputDialog(frame, "Digite o seu nome:", "Nome do Professor", JOptionPane.PLAIN_MESSAGE);
+                if (nome != null && !nome.trim().isEmpty()) {
+                    criarJanelaAluno(frame, nome);
+                }
+            }
         });
         backgroundPanel.add(buttonProfessor);
 
@@ -58,7 +70,7 @@ public class Main {
         JButton buttonSair = new JButton("Sair");
         buttonSair.setBounds(350, 320, 100, 40); // Centralizado abaixo dos outros botões
         buttonSair.setBackground(new Color(255, 100, 100)); // Cor de fundo vermelho claro
-        buttonSair.setForeground(Color.BLACK); // Cor do texto branco
+        buttonSair.setForeground(Color.WHITE); // Cor do texto branco
         buttonSair.addActionListener(e -> {
             int resposta = JOptionPane.showConfirmDialog(frame, "Tem certeza que deseja sair?", "Confirmar Saída", JOptionPane.YES_NO_OPTION);
             if (resposta == JOptionPane.YES_OPTION) {
@@ -69,5 +81,133 @@ public class Main {
 
         frame.setVisible(true);
     }
-    // TERMINO DO CÓDIGO DA JANELA PRINCIPAL
+    // ========================================================== TERMINA JANELA PRINCIPAL ==============================================================================
+
+    // ========================================================== COMEÇA JANELA ALUNO ==============================================================================
+    private static void criarJanelaAluno(JFrame frameAnterior, String nomeAluno) {
+        frameAnterior.dispose(); // Fecha a janela anterior
+
+        JFrame frameAluno = new JFrame("Bem-vindo, " + nomeAluno);
+        frameAluno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frameAluno.setSize(800, 600);
+        frameAluno.setLocationRelativeTo(null);
+        frameAluno.setLayout(null);
+
+        JPanel panelAluno = new JPanel();
+        panelAluno.setLayout(null);
+        panelAluno.setBackground(new Color(220, 240, 255));
+        panelAluno.setBounds(0, 0, 800, 600);
+        frameAluno.add(panelAluno);
+
+        JLabel tituloAluno = new JLabel("Bem-vindo, " + nomeAluno + "!", JLabel.CENTER);
+        tituloAluno.setFont(new Font("Arial", Font.BOLD, 24));
+        tituloAluno.setBounds(200, 50, 400, 40);
+        panelAluno.add(tituloAluno);
+
+        JLabel escolhaNivelAluno = new JLabel("Escolha o nível", JLabel.CENTER);
+        escolhaNivelAluno.setFont(new Font("Arial", Font.PLAIN, 18));
+        escolhaNivelAluno.setBounds(200, 150, 400, 30);
+        panelAluno.add(escolhaNivelAluno);
+
+        JButton buttonN1 = new JButton("N1");
+        buttonN1.setBounds(100, 200, 100, 40);
+        panelAluno.add(buttonN1);
+
+        JButton buttonN2 = new JButton("N2");
+        buttonN2.setBounds(250, 200, 100, 40);
+        panelAluno.add(buttonN2);
+
+        JButton buttonN3 = new JButton("N3");
+        buttonN3.setBounds(400, 200, 100, 40);
+        panelAluno.add(buttonN3);
+
+        JButton buttonProgresso = new JButton("Progresso");
+        buttonProgresso.setBounds(550, 200, 100, 40);
+        panelAluno.add(buttonProgresso);
+
+        JButton buttonVoltar = new JButton("Voltar");
+        buttonVoltar.setBounds(250, 400, 100, 40);
+        buttonVoltar.addActionListener(e -> {
+            frameAluno.dispose();
+            criarJanelaPrincipal();
+        });
+        panelAluno.add(buttonVoltar);
+
+        JButton buttonSair = new JButton("Sair");
+        buttonSair.setBounds(400, 400, 100, 40);
+        buttonSair.setBackground(new Color(255, 100, 100));
+        buttonSair.setForeground(Color.WHITE);
+        buttonSair.addActionListener(e -> {
+            int resposta = JOptionPane.showConfirmDialog(frameAluno, "Tem certeza que deseja sair?", "Confirmar Saída", JOptionPane.YES_NO_OPTION);
+            if (resposta == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+        panelAluno.add(buttonSair);
+
+        frameAluno.setVisible(true);
+    }
+    // ========================================================== TERMINA JANELA ALUNO ==============================================================================
+
+    // ========================================================= COMEÇA JANELA PROFESSOR ==============================================================================
+    private static void criarJanelaProfessor(JFrame frameAnterior, String nomeProfessor) {
+        frameAnterior.dispose();
+
+        JFrame frameProfessor = new JFrame("Bem-vindo, " + nomeProfessor);
+        frameProfessor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frameProfessor.setSize(800, 600);
+        frameProfessor.setLocationRelativeTo(null);
+        frameProfessor.setLayout(null);
+
+        JPanel panelProfessor = new JPanel();
+        panelProfessor.setLayout(null);
+        panelProfessor.setBackground(new Color(240, 230, 255));
+        panelProfessor.setBounds(0, 0, 800, 600);
+        frameProfessor.add(panelProfessor);
+
+        JLabel tituloProfessor = new JLabel("Bem-vindo, " + nomeProfessor + "!", JLabel.CENTER);
+        tituloProfessor.setFont(new Font("Arial", Font.BOLD, 24));
+        tituloProfessor.setBounds(200, 50, 400, 40);
+        panelProfessor.add(tituloProfessor);
+
+        JLabel escolhaNivelProfessor = new JLabel("Escolha o nível", JLabel.CENTER);
+        escolhaNivelProfessor.setFont(new Font("Arial", Font.PLAIN, 18));
+        escolhaNivelProfessor.setBounds(200, 150, 400, 30);
+        panelProfessor.add(escolhaNivelProfessor);
+
+        JButton buttonN1 = new JButton("N1");
+        buttonN1.setBounds(100, 200, 100, 40);
+        panelProfessor.add(buttonN1);
+
+        JButton buttonN2 = new JButton("N2");
+        buttonN2.setBounds(250, 200, 100, 40);
+        panelProfessor.add(buttonN2);
+
+        JButton buttonN3 = new JButton("N3");
+        buttonN3.setBounds(400, 200, 100, 40);
+        panelProfessor.add(buttonN3);
+
+        JButton buttonVoltar = new JButton("Voltar");
+        buttonVoltar.setBounds(250, 400, 100, 40);
+        buttonVoltar.addActionListener(e -> {
+            frameProfessor.dispose();
+            criarJanelaPrincipal();
+        });
+        panelProfessor.add(buttonVoltar);
+
+        JButton buttonSair = new JButton("Sair");
+        buttonSair.setBounds(400, 400, 100, 40);
+        buttonSair.setBackground(new Color(255, 100, 100));
+        buttonSair.setForeground(Color.WHITE);
+        buttonSair.addActionListener(e -> {
+            int resposta = JOptionPane.showConfirmDialog(frameProfessor, "Tem certeza que deseja sair?", "Confirmar Saída", JOptionPane.YES_NO_OPTION);
+            if (resposta == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+        panelProfessor.add(buttonSair);
+
+        frameProfessor.setVisible(true);
+    }
+    // ========================================================= TERMINE JANELA PROFESSOR ==============================================================================
 }
