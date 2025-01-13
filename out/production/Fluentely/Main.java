@@ -4,6 +4,7 @@ import java.awt.*;
 public class Main {
 
     public static void main(String[] args) {
+
         Pessoa pessoa = new Pessoa();
         SwingUtilities.invokeLater(() -> criarJanelaPrincipal(pessoa));
     }
@@ -248,7 +249,7 @@ public class Main {
 
 // ========================================================== TERMINA JANELA PROFESSOR ==============================================================================
 
-// ========================================================== COMEÇA JANELA NÍVEL ==============================================================================
+    // ========================================================== COMEÇA JANELA NÍVEL ==============================================================================
     private static void criarJanelaNivel(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa){
         frameAnterior.dispose();
 
@@ -312,7 +313,7 @@ public class Main {
     }
 // ========================================================== TERMINA JANELA NÍVEL ==============================================================================
 
-// ========================================================== COMEÇA JANELA TEMAS ==============================================================================
+    // ========================================================== COMEÇA JANELA TEMAS ==============================================================================
     private static void criarJanelaTemas(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa){
 
         JFrame frameSubstantivos = new JFrame(buttonClicado.getTema().getText() + " - " + buttonClicado.getNivel().getText() + " - " + pessoa.getTipo());
