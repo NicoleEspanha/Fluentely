@@ -3,6 +3,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.*;
+import java.io.*;
+import java.util.*;
+import java.util.List;
 
 public class Main {
 
@@ -251,7 +254,7 @@ public class Main {
 
 // ========================================================== TERMINA JANELA PROFESSOR ==============================================================================
 
-// ========================================================== COMEÇA JANELA NÍVEL ==============================================================================
+    // ========================================================== COMEÇA JANELA NÍVEL ==============================================================================
     private static void criarJanelaNivel(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa){
         frameAnterior.dispose();
 
@@ -315,50 +318,50 @@ public class Main {
     }
 // ========================================================== TERMINA JANELA NÍVEL ==============================================================================
 
-// ========================================================== COMEÇA JANELA TEMAS ==============================================================================
-private static void criarJanelaTemas(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa) {
-    frameAnterior.dispose();
+    // ========================================================== COMEÇA JANELA TEMAS ==============================================================================
+    private static void criarJanelaTemas(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa) {
+        frameAnterior.dispose();
 
-    JFrame frameTemas = new JFrame(buttonClicado.getTema().getText() + " - " + buttonClicado.getNivel().getText() + " - " + pessoa.getTipo());
-    frameTemas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frameTemas.setSize(800, 600);
-    frameTemas.setLocationRelativeTo(null);
-    frameTemas.setLayout(null);
+        JFrame frameTemas = new JFrame(buttonClicado.getTema().getText() + " - " + buttonClicado.getNivel().getText() + " - " + pessoa.getTipo());
+        frameTemas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frameTemas.setSize(800, 600);
+        frameTemas.setLocationRelativeTo(null);
+        frameTemas.setLayout(null);
 
-    JPanel panelTemas = new JPanel();
-    panelTemas.setLayout(null);
-    panelTemas.setBackground(new Color(41, 147, 227));
-    panelTemas.setBounds(0, 0, 800, 600);
-    frameTemas.add(panelTemas);
+        JPanel panelTemas = new JPanel();
+        panelTemas.setLayout(null);
+        panelTemas.setBackground(new Color(41, 147, 227));
+        panelTemas.setBounds(0, 0, 800, 600);
+        frameTemas.add(panelTemas);
 
-    JLabel temaLabel = new JLabel("Tema: " + buttonClicado.getTema().getText(), JLabel.CENTER);
-    temaLabel.setFont(new Font("Arial", Font.BOLD, 24));
-    temaLabel.setBounds(200, 50, 400, 40);
-    panelTemas.add(temaLabel);
+        JLabel temaLabel = new JLabel("Tema: " + buttonClicado.getTema().getText(), JLabel.CENTER);
+        temaLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        temaLabel.setBounds(200, 50, 400, 40);
+        panelTemas.add(temaLabel);
 
-    JButton buttonContinuar = new JButton("Continuar");
-    buttonContinuar.setBounds(325, 240, 150, 40);
-    buttonContinuar.addActionListener(e -> {
-        if (pessoa.getTipo().equals("Aluno")) {
+        JButton buttonContinuar = new JButton("Continuar");
+        buttonContinuar.setBounds(325, 240, 150, 40);
+        buttonContinuar.addActionListener(e -> {
+            if (pessoa.getTipo().equals("Aluno")) {
+                frameTemas.dispose();
+                criarJanelaPerguntaAluno(frameTemas, buttonClicado, pessoa, 1); // Inicia as perguntas para o aluno a partir da Pergunta 1
+            } else {
+                frameTemas.dispose();
+                criarJanelaPerguntaProfessor(frameTemas, buttonClicado, pessoa, 1); // Inicia as perguntas para o professor a partir da Pergunta 1
+            }
+        });
+        panelTemas.add(buttonContinuar);
+
+        JButton buttonVoltar = new JButton("Voltar");
+        buttonVoltar.setBounds(10, 510, 100, 40);
+        buttonVoltar.addActionListener(e -> {
             frameTemas.dispose();
-            criarJanelaPerguntaAluno(frameTemas, buttonClicado, pessoa, 1); // Inicia as perguntas para o aluno a partir da Pergunta 1
-        } else {
-            frameTemas.dispose();
-            criarJanelaPerguntaProfessor(frameTemas, buttonClicado, pessoa, 1); // Inicia as perguntas para o professor a partir da Pergunta 1
-        }
-    });
-    panelTemas.add(buttonContinuar);
+            criarJanelaNivel(frameTemas, buttonClicado, pessoa); // Volta para a tela de nível
+        });
+        panelTemas.add(buttonVoltar);
 
-    JButton buttonVoltar = new JButton("Voltar");
-    buttonVoltar.setBounds(10, 510, 100, 40);
-    buttonVoltar.addActionListener(e -> {
-        frameTemas.dispose();
-        criarJanelaNivel(frameTemas, buttonClicado, pessoa); // Volta para a tela de nível
-    });
-    panelTemas.add(buttonVoltar);
-
-    frameTemas.setVisible(true);
-}
+        frameTemas.setVisible(true);
+    }
 
 
 
@@ -366,206 +369,292 @@ private static void criarJanelaTemas(JFrame frameAnterior, Botao buttonClicado, 
 
 // ========================================================== COMEÇA JANELA QUESTÃO ALUNO ============================================================================
 
-private static void criarJanelaPerguntaAluno(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa, int numeroPergunta) {
-    frameAnterior.dispose();
+    private static void criarJanelaPerguntaAluno(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa, int numeroPergunta) {
+        frameAnterior.dispose();
 
-    JFrame framePergunta = new JFrame("Pergunta " + numeroPergunta + " - " + buttonClicado.getTema().getText() + " - " + buttonClicado.getNivel().getText());
-    framePergunta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    framePergunta.setSize(800, 600);
-    framePergunta.setLocationRelativeTo(null);
-    framePergunta.setLayout(null);
+        JFrame framePergunta = new JFrame("Pergunta " + numeroPergunta + " - " + buttonClicado.getTema().getText() + " - " + buttonClicado.getNivel().getText());
+        framePergunta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        framePergunta.setSize(800, 600);
+        framePergunta.setLocationRelativeTo(null);
+        framePergunta.setLayout(null);
 
-    
-    JPanel panelPergunta = new JPanel();
-    panelPergunta.setLayout(null);
-    panelPergunta.setBackground(new Color(255, 250, 200));
-    panelPergunta.setBounds(0, 0, 800, 600);
-    framePergunta.add(panelPergunta);
+        JPanel panelPergunta = new JPanel();
+        panelPergunta.setLayout(null);
+        panelPergunta.setBackground(new Color(255, 250, 200));
+        panelPergunta.setBounds(0, 0, 800, 600);
+        framePergunta.add(panelPergunta);
 
-    
-    JLabel perguntaLabel = new JLabel("Pergunta " + numeroPergunta, JLabel.CENTER);
-    perguntaLabel.setFont(new Font("Arial", Font.BOLD, 24));
-    perguntaLabel.setBounds(200, 50, 400, 40);
-    panelPergunta.add(perguntaLabel);
+        JLabel perguntaLabel = new JLabel("Pergunta " + numeroPergunta, JLabel.CENTER);
+        perguntaLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        perguntaLabel.setBounds(200, 50, 400, 40);
+        panelPergunta.add(perguntaLabel);
 
-    
-    String arquivo = null;
-    String nivel = buttonClicado.getNivel().getText(); 
+        String arquivo = null;
+        String nivel = buttonClicado.getNivel().getText();
 
-    //seleciona qual arquivo abrir
-    if (nivel.startsWith("Nível")) {
-        String nivelNum = nivel.split(" ")[1]; 
-        switch (buttonClicado.getTema().getText()) {
-            case "Substantivos":
-                arquivo = "n" + nivelNum + "_sub.txt";
-                break;
-            case "Adjetivos":
-                arquivo = "n" + nivelNum + "_adje.txt";
-                break;
-            case "Verbos":
-                arquivo = "n" + nivelNum + "_verb.txt";
-                break;
-        }
-    }
-
-    //
-    if (arquivo != null) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(arquivo));
-            String linha;
-            int linhaPergunta = 1 + (numeroPergunta - 1) * 7; //a linha da pergunta sempre começa na 1 e pula de sete em sete (1,8,15,22)
-            int linhaAtual = 0;
-            String pergunta = null;
-            String[] alternativas = new String[4];
-            String respostaCorretaTexto = null;
-            
-            //cursor
-            while ((linha = reader.readLine()) != null) {
-                linhaAtual++;
-
-                //armazenando
-                if (linhaAtual == linhaPergunta) {
-                    pergunta = linha;}                
-                if (linhaAtual >= linhaPergunta + 1 && linhaAtual <= linhaPergunta + 4) {
-                    alternativas[linhaAtual - linhaPergunta - 1] = linha;}
-                if (linhaAtual == linhaPergunta + 5) {
-                    respostaCorretaTexto = linha; 
-                    break;}
-
-            reader.close();}
-
-            // exibir a pergunta 
-            if (pergunta != null) {
-                JLabel fraseLabel = new JLabel(pergunta, JLabel.CENTER);
-                fraseLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-                fraseLabel.setBounds(100, 150, 600, 30);
-                panelPergunta.add(fraseLabel);
+        // Seleciona qual arquivo abrir
+        if (nivel.startsWith("Nível")) {
+            String nivelNum = nivel.split(" ")[1];
+            switch (buttonClicado.getTema().getText()) {
+                case "Substantivos":
+                    arquivo = "n" + nivelNum + "_sub.txt";
+                    break;
+                case "Adjetivos":
+                    arquivo = "n" + nivelNum + "_adje.txt";
+                    break;
+                case "Verbos":
+                    arquivo = "n" + nivelNum + "_verb.txt";
+                    break;
             }
+        }
 
-            // exibir os botoes dA alternativas 
-            if (alternativas != null && respostaCorretaTexto != null) {
-                for (int i = 0; i < 4; i++) {
-                    JButton alternativaButton = new JButton(alternativas[i]);
-                    alternativaButton.setBounds(200, 200 + i * 50, 400, 40);
+        if (arquivo != null) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+                String linha;
+                int linhaPergunta = 1 + (numeroPergunta - 1) * 7; // A linha da pergunta começa na 1 e pula de sete em sete (1, 8, 15, 22...)
+                int linhaAtual = 0;
+                String pergunta = null;
+                String[] alternativas = new String[4];
+                String respostaCorretaTexto = null;
 
-                    //logica q determina a resposta correta
+                while ((linha = reader.readLine()) != null) {
+                    linhaAtual++;
+
+                    if (linhaAtual == linhaPergunta) {
+                        pergunta = linha;
+                    } else if (linhaAtual >= linhaPergunta + 1 && linhaAtual <= linhaPergunta + 4) {
+                        alternativas[linhaAtual - linhaPergunta - 1] = linha;
+                    } else if (linhaAtual == linhaPergunta + 5) {
+                        respostaCorretaTexto = linha;
+                        break;
+                    }
+                }
+
+                // Verifica se todos os dados foram carregados
+                if (pergunta != null && alternativas[0] != null && respostaCorretaTexto != null) {
+                    JLabel fraseLabel = new JLabel(pergunta, JLabel.CENTER);
+                    fraseLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+                    fraseLabel.setBounds(100, 150, 600, 30);
+                    panelPergunta.add(fraseLabel);
+
                     int respostaCorretaIndice = switch (respostaCorretaTexto.trim().toUpperCase()) {
-                        case "A" -> linhaPergunta + 1; 
-                        case "B" -> linhaPergunta + 2; 
-                        case "C" -> linhaPergunta + 3; 
-                        case "D" -> linhaPergunta + 4; 
-                        default -> -1; 
+                        case "A" -> 0;
+                        case "B" -> 1;
+                        case "C" -> 2;
+                        case "D" -> 3;
+                        default -> -1;
                     };
 
-                    //fala se a resposta ta certa ou errada
-                    String alternativaTexto = alternativas[i]; 
-                    alternativaButton.addActionListener(e -> {
-                        if (respostaCorretaIndice != -1 && alternativaTexto.equals(alternativas[respostaCorretaIndice - linhaPergunta - 1])) {
-                            JOptionPane.showMessageDialog(framePergunta, "Resposta correta!");
-                        } else {
-                            JOptionPane.showMessageDialog(framePergunta, "Resposta incorreta. Tente novamente!");
-                        }
-                    });
+                    for (int i = 0; i < 4; i++) {
+                        JButton alternativaButton = new JButton(alternativas[i]);
+                        alternativaButton.setBounds(200, 200 + i * 50, 400, 40);
 
-                    panelPergunta.add(alternativaButton);
+                        String alternativaTexto = alternativas[i];
+                        alternativaButton.addActionListener(e -> {
+                            if (respostaCorretaIndice != -1 && alternativaTexto.equals(alternativas[respostaCorretaIndice])) {
+                                alternativaButton.setBackground(Color.green);
+                                JOptionPane.showMessageDialog(framePergunta, "Resposta correta!");
+                            } else {
+                                alternativaButton.setBackground(Color.red);
+                                JOptionPane.showMessageDialog(framePergunta, "Resposta incorreta. Tente novamente!");
+                            }
+                        });
 
+                        panelPergunta.add(alternativaButton);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(framePergunta, "Erro: Dados insuficientes no arquivo.");
                 }
-                //tratando excessões
-            } else {
-                JOptionPane.showMessageDialog(framePergunta, "Erro: Não foi possível carregar a pergunta ou as alternativas.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(framePergunta, "Erro ao ler o arquivo: " + e.getMessage());
             }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(framePergunta, "Erro ao ler o arquivo: " + e.getMessage());
+        } else {
+            JOptionPane.showMessageDialog(framePergunta, "Erro: Arquivo não encontrado.");
         }
-    } else {
-        JOptionPane.showMessageDialog(framePergunta, "Erro: Arquivo não encontrado.");
+
+        JButton buttonProximo = new JButton("Próximo");
+        buttonProximo.setBounds(325, 450, 150, 40);
+        buttonProximo.addActionListener(e -> {
+            if (numeroPergunta < 3) {
+                framePergunta.dispose();
+                criarJanelaPerguntaAluno(framePergunta, buttonClicado, pessoa, numeroPergunta + 1);
+            } else {
+                JOptionPane.showMessageDialog(framePergunta, "Você completou todas as perguntas!");
+                framePergunta.dispose();
+                criarJanelaNivel(framePergunta, buttonClicado, pessoa);
+            }
+        });
+        panelPergunta.add(buttonProximo);
+
+        JButton buttonVoltar = new JButton("Voltar");
+        buttonVoltar.setBounds(10, 510, 100, 40);
+        buttonVoltar.addActionListener(e -> {
+            framePergunta.dispose();
+            criarJanelaTemas(framePergunta, buttonClicado, pessoa);
+        });
+        panelPergunta.add(buttonVoltar);
+
+        framePergunta.setVisible(true);
     }
 
-    //botao próximo
-    JButton buttonProximo = new JButton("Próximo");
-    buttonProximo.setBounds(325, 450, 150, 40);
-    buttonProximo.addActionListener(e -> {
-        if (numeroPergunta < 3) {
-            framePergunta.dispose();
-            criarJanelaPerguntaAluno(framePergunta, buttonClicado, pessoa, numeroPergunta + 1);
-        } else {
-            JOptionPane.showMessageDialog(framePergunta, "Você completou todas as perguntas!");
-            framePergunta.dispose();
-            criarJanelaNivel(framePergunta, buttonClicado, pessoa);
-        }
-    });
-    panelPergunta.add(buttonProximo);
-
-    // botao voltar
-    JButton buttonVoltar = new JButton("Voltar");
-    buttonVoltar.setBounds(10, 510, 100, 40);
-    buttonVoltar.addActionListener(e -> {
-        framePergunta.dispose();
-        criarJanelaTemas(framePergunta, buttonClicado, pessoa);
-    });
-    panelPergunta.add(buttonVoltar);
-
-    framePergunta.setVisible(true);
-}
 
 
 // ========================================================== TERMINA JANELA QUESTÃO ALUNO ==============================================================================
 
 // ========================================================== COMEÇA JANELA QUESTÃO PROFESSOR ===========================================================================
 
-private static void criarJanelaPerguntaProfessor(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa, int numeroPergunta) {
-    frameAnterior.dispose();
+    private static void criarJanelaPerguntaProfessor(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa, int numeroPergunta) {
+        frameAnterior.dispose();
 
-    JFrame framePergunta = new JFrame("Pergunta " + numeroPergunta + " - " + buttonClicado.getTema().getText() + " - " + buttonClicado.getNivel().getText());
-    framePergunta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    framePergunta.setSize(800, 600);
-    framePergunta.setLocationRelativeTo(null);
-    framePergunta.setLayout(null);
+        JFrame framePergunta = new JFrame("Pergunta " + numeroPergunta + " - " + buttonClicado.getTema().getText() + " - " + buttonClicado.getNivel().getText());
+        framePergunta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        framePergunta.setSize(800, 600);
+        framePergunta.setLocationRelativeTo(null);
+        framePergunta.setLayout(null);
 
-    JPanel panelPergunta = new JPanel();
-    panelPergunta.setLayout(null);
-    panelPergunta.setBackground(new Color(255, 250, 200));
-    panelPergunta.setBounds(0, 0, 800, 600);
-    framePergunta.add(panelPergunta);
+        JPanel panelPergunta = new JPanel();
+        panelPergunta.setLayout(null);
+        panelPergunta.setBackground(new Color(255, 250, 200));
+        panelPergunta.setBounds(0, 0, 800, 600);
+        framePergunta.add(panelPergunta);
 
-    JLabel perguntaLabel = new JLabel("Pergunta " + numeroPergunta, JLabel.CENTER);
-    perguntaLabel.setFont(new Font("Arial", Font.BOLD, 24));
-    perguntaLabel.setBounds(200, 50, 400, 40);
-    panelPergunta.add(perguntaLabel);
+        JLabel perguntaLabel = new JLabel("Pergunta " + numeroPergunta, JLabel.CENTER);
+        perguntaLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        perguntaLabel.setBounds(200, 50, 400, 40);
+        panelPergunta.add(perguntaLabel);
 
-    JButton buttonProximo = new JButton("Próximo");
-    buttonProximo.setBounds(325, 240, 150, 40);
-    buttonProximo.addActionListener(e -> {
-        if (numeroPergunta <3) {
-            framePergunta.dispose();
-            criarJanelaPerguntaProfessor(framePergunta, buttonClicado, pessoa, numeroPergunta + 1); 
-        } else {
-            JOptionPane.showMessageDialog(framePergunta, "Você completou todas as perguntas!");
-            framePergunta.dispose();
-            criarJanelaNivel(framePergunta, buttonClicado, pessoa); 
+        JLabel modificarLabel = new JLabel("Escolha um elemento para alterar:", JLabel.CENTER);
+        modificarLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        modificarLabel.setBounds(200, 90, 400, 40);
+        panelPergunta.add(modificarLabel);
+
+        String arquivo = null;
+        String nivel = buttonClicado.getNivel().getText();
+
+//TESTANDO LOGICA---------------------------------------------------------------------------------------------------------------------------------------
+        // Seleciona qual arquivo abrir
+        if (nivel.startsWith("Nível")) {
+            String nivelNum = nivel.split(" ")[1];
+            switch (buttonClicado.getTema().getText()) {
+                case "Substantivos":
+                    arquivo = "n" + nivelNum + "_sub.txt";
+                    break;
+                case "Adjetivos":
+                    arquivo = "n" + nivelNum + "_adje.txt";
+                    break;
+                case "Verbos":
+                    arquivo = "n" + nivelNum + "_verb.txt";
+                    break;
+            }
         }
-    });
-    panelPergunta.add(buttonProximo);
 
-    JButton buttonAlterar = new JButton("Alterar");
-    buttonAlterar.setBounds(150, 240, 150, 40);
-    buttonAlterar.addActionListener(e -> {
-        JOptionPane.showMessageDialog(framePergunta, "Alterando a pergunta..."); //IMPLEMENTAR LOGICA PRA ALTERAR
-    });
-    panelPergunta.add(buttonAlterar);
+        if (arquivo != null) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+                List<String> linhas = new ArrayList<>();
+                String linha;
+                int linhaPergunta = 1 + (numeroPergunta - 1) * 7; // A linha da pergunta começa na 1 e pula de sete em sete (1, 8, 15, 22...)
+                int linhaAtual = 0;
+                String pergunta = null;
+                String[] alternativas = new String[4];
+                String respostaCorretaTexto = null;
 
-    JButton buttonVoltar = new JButton("Voltar");
-    buttonVoltar.setBounds(10, 510, 100, 40);
-    buttonVoltar.addActionListener(e -> {
-        framePergunta.dispose();
-        criarJanelaTemas(framePergunta, buttonClicado, pessoa);
-    });
-    panelPergunta.add(buttonVoltar);
+                while ((linha = reader.readLine()) != null) {
+                    linhas.add(linha);
+                    linhaAtual++;
 
-    framePergunta.setVisible(true);
-}
+                    if (linhaAtual == linhaPergunta) {
+                        pergunta = linha;
+                    } else if (linhaAtual >= linhaPergunta + 1 && linhaAtual <= linhaPergunta + 4) {
+                        alternativas[linhaAtual - linhaPergunta - 1] = linha;
+                    } else if (linhaAtual == linhaPergunta + 5) {
+                        respostaCorretaTexto = linha;
+                        break;
+                    }
+                }
+
+                // Verifica se todos os dados foram carregados
+                if (pergunta != null && alternativas[0] != null && respostaCorretaTexto != null) {
+                    JButton fraseButton = new JButton(pergunta);
+                    fraseButton.setFont(new Font("Arial", Font.PLAIN, 18));
+                    fraseButton.setBounds(100, 150, 600, 30);
+                    fraseButton.setBackground(Color.white);
+                    fraseButton.setBorder(BorderFactory.createLoweredBevelBorder());
+                    fraseButton.addActionListener(e -> {
+                        String pergModificada = JOptionPane.showInputDialog(framePergunta, "Altere a pergunta:", fraseButton.getText(), JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.showMessageDialog(framePergunta, "Alterando a pergunta..."); //IMPLEMENTAR LOGICA PRA ALTERAR
+                        if (linhaPergunta <= linhas.size()) {
+                            linhas.set(linhaPergunta - 1, pergModificada);
+                        }
+                        //LOGICA PRA ALTERAR PERGUNTA
+
+                    });
+                    panelPergunta.add(fraseButton);
+
+                    int respostaCorretaIndice = switch (respostaCorretaTexto.trim().toUpperCase()) {
+                        case "A" -> 0;
+                        case "B" -> 1;
+                        case "C" -> 2;
+                        case "D" -> 3;
+                        default -> -1;
+                    };
+
+                    for (int i = 0; i < 4; i++) {
+                        JButton alternativaButton = new JButton(alternativas[i]);
+                        alternativaButton.setBounds(200, 200 + i * 50, 400, 40);
+                        String alternativaTexto = alternativas[i];
+                        if (respostaCorretaIndice != -1 && alternativaTexto.equals(alternativas[respostaCorretaIndice])) {
+                            alternativaButton.setBackground(Color.green);
+                        }
+
+                        alternativaButton.addActionListener(e -> {
+                            if (respostaCorretaIndice != -1 && alternativaTexto.equals(alternativas[respostaCorretaIndice])) {
+                                String resposta = JOptionPane.showInputDialog(framePergunta, "Altere a resposta correta:", alternativaTexto, JOptionPane.PLAIN_MESSAGE);
+                            } else {
+                                String resposta = JOptionPane.showInputDialog(framePergunta, "Altere a resposta errada:", alternativaTexto, JOptionPane.PLAIN_MESSAGE);
+                            }
+                            //LOGICA PRA ALTERAR RESPOSTAS
+
+                        });
+                        panelPergunta.add(alternativaButton);
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(framePergunta, "Erro: Dados insuficientes no arquivo.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(framePergunta, "Erro ao ler o arquivo: " + e.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(framePergunta, "Erro: Arquivo não encontrado.");
+        }
+//TESTANDO LOGICA-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        JButton buttonProximo = new JButton("Próximo");
+        buttonProximo.setBounds(325, 450, 150, 40);
+        buttonProximo.addActionListener(e -> {
+            if (numeroPergunta <3) {
+                framePergunta.dispose();
+                criarJanelaPerguntaProfessor(framePergunta, buttonClicado, pessoa, numeroPergunta + 1);
+            } else {
+                JOptionPane.showMessageDialog(framePergunta, "Você completou todas as perguntas!");
+                framePergunta.dispose();
+                criarJanelaNivel(framePergunta, buttonClicado, pessoa);
+            }
+        });
+        panelPergunta.add(buttonProximo);
+
+        JButton buttonVoltar = new JButton("Voltar");
+        buttonVoltar.setBounds(10, 510, 100, 40);
+        buttonVoltar.addActionListener(e -> {
+            framePergunta.dispose();
+            criarJanelaTemas(framePergunta, buttonClicado, pessoa);
+        });
+        panelPergunta.add(buttonVoltar);
+
+        framePergunta.setVisible(true);
+    }
 
 // ========================================================== TERMINA JANELA QUESTÃO PROFESSOR ==========================================================================
 
 }
-
