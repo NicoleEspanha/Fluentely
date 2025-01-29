@@ -1,7 +1,8 @@
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -10,7 +11,7 @@ public class Main {
 
     // variáveis para o progresso
     private static int respostasCorretas = 0; // Número de respostas corretas
-    private static final int TOTAL_PERGUNTAS = 90; // Total de perguntas 
+    private static final int TOTAL_PERGUNTAS = 27; // Total de perguntas
 
     public static void main(String[] args) {
         Pessoa pessoa = new Pessoa();
@@ -28,13 +29,13 @@ public class Main {
         // Painel de fundo para customizar a cor
         JPanel backgroundPanel = new JPanel();
         backgroundPanel.setLayout(null);
-        backgroundPanel.setBackground(new Color(200, 230, 255)); 
+        backgroundPanel.setBackground(new Color(200, 230, 255));
         backgroundPanel.setBounds(0, 0, 800, 600);
         frame.add(backgroundPanel);
 
         // Título principal
-        JLabel titulo = new JLabel("Bem-vindo ao Fluentely", JLabel.CENTER);
-        titulo.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 32)); 
+        JLabel titulo = new JLabel("Bem-vindo ao Fluentily", JLabel.CENTER);
+        titulo.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 32));
         titulo.setBounds(200, 50, 400, 50);
         backgroundPanel.add(titulo);
 
@@ -93,7 +94,7 @@ public class Main {
         });
         backgroundPanel.add(buttonSair);
 
-       
+
 
         frame.setVisible(true);
     }
@@ -103,7 +104,7 @@ public class Main {
     private static void criarJanelaAluno(JFrame frameAnterior, Pessoa pessoa) {
         frameAnterior.dispose(); // Fecha a janela anterior
 
-        
+
         JFrame frameAluno = new JFrame("Bem-vindo, aluno(a) " + pessoa.getNome());
         frameAluno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frameAluno.setSize(800, 600);
@@ -153,7 +154,7 @@ public class Main {
             criarJanelaNivel(frameAluno, botao, pessoa);
         });
 
-        
+
         JButton buttonVoltar = new JButton("Voltar");
         buttonVoltar.setBounds(250, 400, 100, 40);
         buttonVoltar.addActionListener(e -> {
@@ -173,20 +174,20 @@ public class Main {
             }
         });
         panelAluno.add(buttonSair);
-        
-        
 
-                JButton buttonProgresso = new JButton("Progresso");
+
+
+        JButton buttonProgresso = new JButton("Progresso");
         buttonProgresso.setBounds(550, 200, 100, 40);
         buttonProgresso.addActionListener(e -> {
             // Calcula a porcentagem de progresso
-            double progresso = (respostasCorretas / (double) TOTAL_PERGUNTAS) * 1000;
+            double progresso = (respostasCorretas / (double) TOTAL_PERGUNTAS) * 100;
             // Formata o valor para mostrar 2 casas decimais
             JOptionPane.showMessageDialog(frameAluno, "Você completou " + String.format("%.2f", progresso) + "% das perguntas corretamente.");
         });
         panelAluno.add(buttonProgresso);
 
-        
+
 
         frameAluno.setVisible(true);
     }
@@ -388,8 +389,7 @@ public class Main {
 
     private static void criarJanelaPerguntaAluno(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa, int numeroPergunta) {
         frameAnterior.dispose();
-        
-        //cria a janela e escreve informações
+
         JFrame framePergunta = new JFrame("Pergunta " + numeroPergunta + " - " + buttonClicado.getTema().getText() + " - " + buttonClicado.getNivel().getText());
         framePergunta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         framePergunta.setSize(800, 600);
@@ -406,8 +406,6 @@ public class Main {
         perguntaLabel.setFont(new Font("Arial", Font.BOLD, 24));
         perguntaLabel.setBounds(200, 50, 400, 40);
         panelPergunta.add(perguntaLabel);
-
-       
 
         String arquivo = null;
         String nivel = buttonClicado.getNivel().getText();
@@ -427,20 +425,19 @@ public class Main {
                     break;
             }
         }
-        //lê o arquivo se ele não estiver vazio
+
         if (arquivo != null) {
             try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
                 String linha;
                 int linhaPergunta = 1 + (numeroPergunta - 1) * 7; // A linha da pergunta começa na 1 e pula de sete em sete (1, 8, 15, 22...)
                 int linhaAtual = 0;
                 String pergunta = null;
-                String[] alternativas = new String[4]; //num de alternativas
+                String[] alternativas = new String[4];
                 String respostaCorretaTexto = null;
-                
-                //cursor q vai pulando de linha em linha
+
                 while ((linha = reader.readLine()) != null) {
                     linhaAtual++;
-                    //indica se está lendo uma pergunta, uma alternativa ou a resposta
+
                     if (linhaAtual == linhaPergunta) {
                         pergunta = linha;
                     } else if (linhaAtual >= linhaPergunta + 1 && linhaAtual <= linhaPergunta + 4) {
@@ -451,17 +448,12 @@ public class Main {
                     }
                 }
 
-                // Verifica se todos os dados foram carregados e escreve na tela 
+                // Verifica se todos os dados foram carregados
                 if (pergunta != null && alternativas[0] != null && respostaCorretaTexto != null) {
                     JLabel fraseLabel = new JLabel(pergunta, JLabel.CENTER);
                     fraseLabel.setFont(new Font("Arial", Font.PLAIN, 18));
                     fraseLabel.setBounds(100, 150, 600, 30);
                     panelPergunta.add(fraseLabel);
-
-                    JLabel avisoLabel = new JLabel("AO SAIR SEU PROGRESSO NÃO SERÁ SALVO ", JLabel.CENTER);
-                    avisoLabel.setFont(new Font("Arial", Font.BOLD, 12));
-                    avisoLabel.setBounds(200, 520, 400, 40);
-                    panelPergunta.add(avisoLabel);
 
                     int respostaCorretaIndice = switch (respostaCorretaTexto.trim().toUpperCase()) {
                         case "A" -> 0;
@@ -475,13 +467,12 @@ public class Main {
                         JButton alternativaButton = new JButton(alternativas[i]);
                         alternativaButton.setBounds(200, 200 + i * 50, 400, 40);
 
-                        //pinta as respostas de verde ou vermelha ao serem clicadas e informa se esta correta ou errada
                         String alternativaTexto = alternativas[i];
                         alternativaButton.addActionListener(e -> {
                             if (respostaCorretaIndice != -1 && alternativaTexto.equals(alternativas[respostaCorretaIndice])) {
                                 alternativaButton.setBackground(Color.green);
                                 JOptionPane.showMessageDialog(framePergunta, "Resposta correta!");
-
+                                respostasCorretas++;
                             } else {
                                 alternativaButton.setBackground(Color.red);
                                 JOptionPane.showMessageDialog(framePergunta, "Resposta incorreta. Tente novamente!");
@@ -490,7 +481,6 @@ public class Main {
 
                         panelPergunta.add(alternativaButton);
                     }
-                //tratando excessões
                 } else {
                     JOptionPane.showMessageDialog(framePergunta, "Erro: Dados insuficientes no arquivo.");
                 }
@@ -502,25 +492,20 @@ public class Main {
             JOptionPane.showMessageDialog(framePergunta, "Erro: Arquivo não encontrado.");
         }
 
-        //botao proximo ate o fim das perguntas
         JButton buttonProximo = new JButton("Próximo");
         buttonProximo.setBounds(325, 450, 150, 40);
         buttonProximo.addActionListener(e -> {
-            if (numeroPergunta < 10) {
+            if (numeroPergunta < 3) {
                 framePergunta.dispose();
                 criarJanelaPerguntaAluno(framePergunta, buttonClicado, pessoa, numeroPergunta + 1);
-                    //informa q já completou todas as perguntas
             } else {
-                respostasCorretas++;
                 JOptionPane.showMessageDialog(framePergunta, "Você completou todas as perguntas!");
                 framePergunta.dispose();
-            
                 criarJanelaNivel(framePergunta, buttonClicado, pessoa);
             }
         });
         panelPergunta.add(buttonProximo);
-        
-        //botão voltar
+
         JButton buttonVoltar = new JButton("Voltar");
         buttonVoltar.setBounds(10, 510, 100, 40);
         buttonVoltar.addActionListener(e -> {
@@ -585,7 +570,6 @@ public class Main {
 
         if (arquivo != null) {
             try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
-                List<String> linhas = new ArrayList<>();
                 String linha;
                 int linhaPergunta = 1 + (numeroPergunta - 1) * 7; // A linha da pergunta começa na 1 e pula de sete em sete (1, 8, 15, 22...)
                 int linhaAtual = 0;
@@ -594,7 +578,6 @@ public class Main {
                 String respostaCorretaTexto = null;
 
                 while ((linha = reader.readLine()) != null) {
-                    linhas.add(linha);
                     linhaAtual++;
 
                     if (linhaAtual == linhaPergunta) {
@@ -614,14 +597,12 @@ public class Main {
                     fraseButton.setBounds(100, 150, 600, 30);
                     fraseButton.setBackground(Color.white);
                     fraseButton.setBorder(BorderFactory.createLoweredBevelBorder());
+                    String finalArquivo = arquivo;
                     fraseButton.addActionListener(e -> {
                         String pergModificada = JOptionPane.showInputDialog(framePergunta, "Altere a pergunta:", fraseButton.getText(), JOptionPane.PLAIN_MESSAGE);
                         JOptionPane.showMessageDialog(framePergunta, "Alterando a pergunta..."); //IMPLEMENTAR LOGICA PRA ALTERAR
-                        if (linhaPergunta <= linhas.size()) {
-                            linhas.set(linhaPergunta - 1, pergModificada);
-                        }
+                        modificarPergunta(finalArquivo, numeroPergunta, pergModificada);
                         //LOGICA PRA ALTERAR PERGUNTA
-
                     });
                     panelPergunta.add(fraseButton);
 
@@ -640,15 +621,16 @@ public class Main {
                         if (respostaCorretaIndice != -1 && alternativaTexto.equals(alternativas[respostaCorretaIndice])) {
                             alternativaButton.setBackground(Color.green);
                         }
-
+                        int numResp = i+1;
                         alternativaButton.addActionListener(e -> {
                             if (respostaCorretaIndice != -1 && alternativaTexto.equals(alternativas[respostaCorretaIndice])) {
                                 String resposta = JOptionPane.showInputDialog(framePergunta, "Altere a resposta correta:", alternativaTexto, JOptionPane.PLAIN_MESSAGE);
+                                modificarAlternativa(finalArquivo, numeroPergunta, numResp, resposta);
                             } else {
                                 String resposta = JOptionPane.showInputDialog(framePergunta, "Altere a resposta errada:", alternativaTexto, JOptionPane.PLAIN_MESSAGE);
+                                modificarAlternativa(finalArquivo, numeroPergunta, numResp, resposta);
                             }
                             //LOGICA PRA ALTERAR RESPOSTAS
-
                         });
                         panelPergunta.add(alternativaButton);
                     }
@@ -663,8 +645,7 @@ public class Main {
             JOptionPane.showMessageDialog(framePergunta, "Erro: Arquivo não encontrado.");
         }
 //TESTANDO LOGICA-------------------------------------------------------------------------------------------------------------------------------------------------------
-        
-        //botão "proximo"
+
         JButton buttonProximo = new JButton("Próximo");
         buttonProximo.setBounds(325, 450, 150, 40);
         buttonProximo.addActionListener(e -> {
@@ -679,7 +660,6 @@ public class Main {
         });
         panelPergunta.add(buttonProximo);
 
-        //botão "voltar"
         JButton buttonVoltar = new JButton("Voltar");
         buttonVoltar.setBounds(10, 510, 100, 40);
         buttonVoltar.addActionListener(e -> {
@@ -692,5 +672,64 @@ public class Main {
     }
 
 // ========================================================== TERMINA JANELA QUESTÃO PROFESSOR ==========================================================================
+// ========================================================== COMEÇA MÉTODOS DE ALTERAÇÃO DO PROFESSOR ==========================================================================
+
+    public static void modificarPergunta(String arquivo, int numeroPergunta, String novaPergunta) {
+        List<String> linhas = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                linhas.add(linha);
+            }
+
+            int linhaPergunta = (numeroPergunta - 1) * 7; // indice: A cada 7 linhas há uma pergunta
+
+            if (linhaPergunta < linhas.size()) {
+                linhas.set(linhaPergunta, novaPergunta); // Modifica a pergunta na linha correta
+                salvarAlteracoesNoArquivo(arquivo, linhas); // Salvar no arquivo
+            } else {
+                System.out.println("Pergunta não encontrada no arquivo.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void modificarAlternativa(String arquivo, int numeroPergunta, int numeroAlternativa, String novaAlternativa) {
+        List<String> linhas = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                linhas.add(linha);
+            }
+
+            int linhaPergunta = (numeroPergunta - 1) * 7; // indice: A cada 7 linhas há uma pergunta
+            int linhaAlternativa = linhaPergunta + numeroAlternativa; // adiciona a posicao da alternativa
+
+            if (linhaAlternativa < linhas.size()) {
+                linhas.set(linhaAlternativa, novaAlternativa); // Substitui a alternativa na linha correta
+
+                salvarAlteracoesNoArquivo(arquivo, linhas); // Salvar no arquivo
+            } else {
+                System.out.println("Alternativa não encontrada no arquivo.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void salvarAlteracoesNoArquivo(String arquivo, List<String> linhas) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo))) {
+            for (String linha : linhas) { // Escreve todas as linhas modificadas de volta no arquivo
+                writer.write(linha);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+// ========================================================== TERMINA MÉTODOS DE ALTERAÇÃO DO PROFESSOR ==========================================================================
 
 }
