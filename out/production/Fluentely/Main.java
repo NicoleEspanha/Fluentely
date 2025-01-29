@@ -10,7 +10,7 @@ public class Main {
 
     // variáveis para o progresso
     private static int respostasCorretas = 0; // Número de respostas corretas
-    private static final int TOTAL_PERGUNTAS = 27; // Total de perguntas        
+    private static final int TOTAL_PERGUNTAS = 90; // Total de perguntas 
 
     public static void main(String[] args) {
         Pessoa pessoa = new Pessoa();
@@ -33,7 +33,7 @@ public class Main {
         frame.add(backgroundPanel);
 
         // Título principal
-        JLabel titulo = new JLabel("Bem-vindo ao Fluentily", JLabel.CENTER);
+        JLabel titulo = new JLabel("Bem-vindo ao Fluentely", JLabel.CENTER);
         titulo.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 32)); 
         titulo.setBounds(200, 50, 400, 50);
         backgroundPanel.add(titulo);
@@ -180,7 +180,7 @@ public class Main {
         buttonProgresso.setBounds(550, 200, 100, 40);
         buttonProgresso.addActionListener(e -> {
             // Calcula a porcentagem de progresso
-            double progresso = (respostasCorretas / (double) TOTAL_PERGUNTAS) * 100;
+            double progresso = (respostasCorretas / (double) TOTAL_PERGUNTAS) * 1000;
             // Formata o valor para mostrar 2 casas decimais
             JOptionPane.showMessageDialog(frameAluno, "Você completou " + String.format("%.2f", progresso) + "% das perguntas corretamente.");
         });
@@ -388,7 +388,8 @@ public class Main {
 
     private static void criarJanelaPerguntaAluno(JFrame frameAnterior, Botao buttonClicado, Pessoa pessoa, int numeroPergunta) {
         frameAnterior.dispose();
-
+        
+        //cria a janela e escreve informações
         JFrame framePergunta = new JFrame("Pergunta " + numeroPergunta + " - " + buttonClicado.getTema().getText() + " - " + buttonClicado.getNivel().getText());
         framePergunta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         framePergunta.setSize(800, 600);
@@ -405,6 +406,8 @@ public class Main {
         perguntaLabel.setFont(new Font("Arial", Font.BOLD, 24));
         perguntaLabel.setBounds(200, 50, 400, 40);
         panelPergunta.add(perguntaLabel);
+
+       
 
         String arquivo = null;
         String nivel = buttonClicado.getNivel().getText();
@@ -424,19 +427,20 @@ public class Main {
                     break;
             }
         }
-
+        //lê o arquivo se ele não estiver vazio
         if (arquivo != null) {
             try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
                 String linha;
                 int linhaPergunta = 1 + (numeroPergunta - 1) * 7; // A linha da pergunta começa na 1 e pula de sete em sete (1, 8, 15, 22...)
                 int linhaAtual = 0;
                 String pergunta = null;
-                String[] alternativas = new String[4];
+                String[] alternativas = new String[4]; //num de alternativas
                 String respostaCorretaTexto = null;
-
+                
+                //cursor q vai pulando de linha em linha
                 while ((linha = reader.readLine()) != null) {
                     linhaAtual++;
-
+                    //indica se está lendo uma pergunta, uma alternativa ou a resposta
                     if (linhaAtual == linhaPergunta) {
                         pergunta = linha;
                     } else if (linhaAtual >= linhaPergunta + 1 && linhaAtual <= linhaPergunta + 4) {
@@ -447,12 +451,17 @@ public class Main {
                     }
                 }
 
-                // Verifica se todos os dados foram carregados
+                // Verifica se todos os dados foram carregados e escreve na tela 
                 if (pergunta != null && alternativas[0] != null && respostaCorretaTexto != null) {
                     JLabel fraseLabel = new JLabel(pergunta, JLabel.CENTER);
                     fraseLabel.setFont(new Font("Arial", Font.PLAIN, 18));
                     fraseLabel.setBounds(100, 150, 600, 30);
                     panelPergunta.add(fraseLabel);
+
+                    JLabel avisoLabel = new JLabel("AO SAIR SEU PROGRESSO NÃO SERÁ SALVO ", JLabel.CENTER);
+                    avisoLabel.setFont(new Font("Arial", Font.BOLD, 12));
+                    avisoLabel.setBounds(200, 520, 400, 40);
+                    panelPergunta.add(avisoLabel);
 
                     int respostaCorretaIndice = switch (respostaCorretaTexto.trim().toUpperCase()) {
                         case "A" -> 0;
@@ -466,12 +475,13 @@ public class Main {
                         JButton alternativaButton = new JButton(alternativas[i]);
                         alternativaButton.setBounds(200, 200 + i * 50, 400, 40);
 
+                        //pinta as respostas de verde ou vermelha ao serem clicadas e informa se esta correta ou errada
                         String alternativaTexto = alternativas[i];
                         alternativaButton.addActionListener(e -> {
                             if (respostaCorretaIndice != -1 && alternativaTexto.equals(alternativas[respostaCorretaIndice])) {
                                 alternativaButton.setBackground(Color.green);
                                 JOptionPane.showMessageDialog(framePergunta, "Resposta correta!");
-                                respostasCorretas++;
+
                             } else {
                                 alternativaButton.setBackground(Color.red);
                                 JOptionPane.showMessageDialog(framePergunta, "Resposta incorreta. Tente novamente!");
@@ -480,6 +490,7 @@ public class Main {
 
                         panelPergunta.add(alternativaButton);
                     }
+                //tratando excessões
                 } else {
                     JOptionPane.showMessageDialog(framePergunta, "Erro: Dados insuficientes no arquivo.");
                 }
@@ -491,20 +502,25 @@ public class Main {
             JOptionPane.showMessageDialog(framePergunta, "Erro: Arquivo não encontrado.");
         }
 
+        //botao proximo ate o fim das perguntas
         JButton buttonProximo = new JButton("Próximo");
         buttonProximo.setBounds(325, 450, 150, 40);
         buttonProximo.addActionListener(e -> {
-            if (numeroPergunta < 3) {
+            if (numeroPergunta < 10) {
                 framePergunta.dispose();
                 criarJanelaPerguntaAluno(framePergunta, buttonClicado, pessoa, numeroPergunta + 1);
+                    //informa q já completou todas as perguntas
             } else {
+                respostasCorretas++;
                 JOptionPane.showMessageDialog(framePergunta, "Você completou todas as perguntas!");
                 framePergunta.dispose();
+            
                 criarJanelaNivel(framePergunta, buttonClicado, pessoa);
             }
         });
         panelPergunta.add(buttonProximo);
-
+        
+        //botão voltar
         JButton buttonVoltar = new JButton("Voltar");
         buttonVoltar.setBounds(10, 510, 100, 40);
         buttonVoltar.addActionListener(e -> {
@@ -647,7 +663,8 @@ public class Main {
             JOptionPane.showMessageDialog(framePergunta, "Erro: Arquivo não encontrado.");
         }
 //TESTANDO LOGICA-------------------------------------------------------------------------------------------------------------------------------------------------------
-
+        
+        //botão "proximo"
         JButton buttonProximo = new JButton("Próximo");
         buttonProximo.setBounds(325, 450, 150, 40);
         buttonProximo.addActionListener(e -> {
@@ -662,6 +679,7 @@ public class Main {
         });
         panelPergunta.add(buttonProximo);
 
+        //botão "voltar"
         JButton buttonVoltar = new JButton("Voltar");
         buttonVoltar.setBounds(10, 510, 100, 40);
         buttonVoltar.addActionListener(e -> {
