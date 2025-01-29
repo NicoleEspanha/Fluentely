@@ -2,12 +2,15 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import javax.swing.*;
-import java.io.*;
 import java.util.*;
 import java.util.List;
+import javax.swing.*;
 
 public class Main {
+
+    // variáveis para o progresso
+    private static int respostasCorretas = 0; // Número de respostas corretas
+    private static final int TOTAL_PERGUNTAS = 27; // Total de perguntas        
 
     public static void main(String[] args) {
         Pessoa pessoa = new Pessoa();
@@ -25,13 +28,13 @@ public class Main {
         // Painel de fundo para customizar a cor
         JPanel backgroundPanel = new JPanel();
         backgroundPanel.setLayout(null);
-        backgroundPanel.setBackground(new Color(200, 230, 255)); // Cor de fundo azul claro
+        backgroundPanel.setBackground(new Color(200, 230, 255)); 
         backgroundPanel.setBounds(0, 0, 800, 600);
         frame.add(backgroundPanel);
 
         // Título principal
         JLabel titulo = new JLabel("Bem-vindo ao Fluentily", JLabel.CENTER);
-        titulo.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 32)); // Fonte mais elegante
+        titulo.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 32)); 
         titulo.setBounds(200, 50, 400, 50);
         backgroundPanel.add(titulo);
 
@@ -90,6 +93,8 @@ public class Main {
         });
         backgroundPanel.add(buttonSair);
 
+       
+
         frame.setVisible(true);
     }
     // ========================================================== TERMINA JANELA PRINCIPAL ==============================================================================
@@ -98,6 +103,7 @@ public class Main {
     private static void criarJanelaAluno(JFrame frameAnterior, Pessoa pessoa) {
         frameAnterior.dispose(); // Fecha a janela anterior
 
+        
         JFrame frameAluno = new JFrame("Bem-vindo, aluno(a) " + pessoa.getNome());
         frameAluno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frameAluno.setSize(800, 600);
@@ -147,10 +153,7 @@ public class Main {
             criarJanelaNivel(frameAluno, botao, pessoa);
         });
 
-        JButton buttonProgresso = new JButton("Progresso");
-        buttonProgresso.setBounds(550, 200, 100, 40);
-        panelAluno.add(buttonProgresso);
-
+        
         JButton buttonVoltar = new JButton("Voltar");
         buttonVoltar.setBounds(250, 400, 100, 40);
         buttonVoltar.addActionListener(e -> {
@@ -170,6 +173,20 @@ public class Main {
             }
         });
         panelAluno.add(buttonSair);
+        
+        
+
+                JButton buttonProgresso = new JButton("Progresso");
+        buttonProgresso.setBounds(550, 200, 100, 40);
+        buttonProgresso.addActionListener(e -> {
+            // Calcula a porcentagem de progresso
+            double progresso = (respostasCorretas / (double) TOTAL_PERGUNTAS) * 100;
+            // Formata o valor para mostrar 2 casas decimais
+            JOptionPane.showMessageDialog(frameAluno, "Você completou " + String.format("%.2f", progresso) + "% das perguntas corretamente.");
+        });
+        panelAluno.add(buttonProgresso);
+
+        
 
         frameAluno.setVisible(true);
     }
@@ -454,6 +471,7 @@ public class Main {
                             if (respostaCorretaIndice != -1 && alternativaTexto.equals(alternativas[respostaCorretaIndice])) {
                                 alternativaButton.setBackground(Color.green);
                                 JOptionPane.showMessageDialog(framePergunta, "Resposta correta!");
+                                respostasCorretas++;
                             } else {
                                 alternativaButton.setBackground(Color.red);
                                 JOptionPane.showMessageDialog(framePergunta, "Resposta incorreta. Tente novamente!");
